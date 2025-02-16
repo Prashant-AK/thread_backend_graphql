@@ -3,8 +3,18 @@ import UserService, {
   SignInPayloadInterface,
 } from "../../services/user";
 
+export interface Context {
+  user: any; // Replace 'any' with the appropriate user type if available
+}
+
 const queries = {
-  hello: () => "Hello world",
+  getCurrentLoggedInUser: async (_: any, parameter: any, context: Context) => {
+    if (!context.user) {
+      throw new Error("Unauthorized");
+    }
+    const res = await UserService.getUserById(context.user.id);
+    return res;
+  },
 };
 
 const mutations = {

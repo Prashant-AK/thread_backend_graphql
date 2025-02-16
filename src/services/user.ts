@@ -1,6 +1,6 @@
 import { createHmac, randomBytes } from "node:crypto";
 import prismaClient from "../lib/db";
-import Jwt from "jsonwebtoken";
+import JWT from "jsonwebtoken";
 
 export interface CreateUserPayloadInterface {
   firstName: string;
@@ -21,16 +21,11 @@ class UserService {
       where: {
         email,
       },
-      // select: {
-      //   id: true,
-      //   email: true,
-      //   firstName: true,
-      //   lastName: true,
-      //   salt: true,
-      //   password: true,
-      //    phoneNumber:true
-      // },
     });
+  }
+
+  public static getUserById(id: string) {
+    return prismaClient.user.findUnique({ where: { id } });
   }
 
   private static generateHash(salt: string, password: string) {
@@ -73,7 +68,7 @@ class UserService {
       throw new Error("Invalid email & password");
     }
 
-    const token = Jwt.sign(
+    const token = JWT.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET ? process.env.JWT_SECRET : "secret",
       {
@@ -89,6 +84,11 @@ class UserService {
       phoneNumber: user.phoneNumber,
       token,
     };
+  }
+
+  public static decodeJWTToken(token: string) {
+    const secret = process.env.JWT_SECRET || "secret";
+    return JWT.verify(token, secret);
   }
 }
 

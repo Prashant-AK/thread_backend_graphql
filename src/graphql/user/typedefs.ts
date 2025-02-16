@@ -9,7 +9,7 @@ export const typeDefs = `
   }
 
   type Query {
-    hello: String
+    getCurrentLoggedInUser: User
   }
 
   type Mutation {
