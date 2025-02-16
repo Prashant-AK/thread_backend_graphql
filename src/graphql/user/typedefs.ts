@@ -5,7 +5,6 @@ export const typeDefs = `
     lastName: String
     email: String!
     token: String
-    salt: String
     phoneNumber: String
   }
 
